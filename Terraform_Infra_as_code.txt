@@ -1,0 +1,122 @@
+# Terraform Introduction
+- developed by HashiCorp
+- Platform for building, changing, and managing infrastructure in a safe, repeatable way 
+- Works across cloud providers (AWS, Azure, GCP) and on-premises infrastructure
+- Uses HashiCorp Configuration Language (HCL) to describe desired infrastructure state
+- Maintains a state file to track infrastructure resources and their relationships
+- Low-level components like compute instances, storage, and networking, as well as high-level components like DNS entries and SaaS features
+-Virtual machines, containers, databases, load balancers, security groups
+Network configurations, DNS records, SSL certificates
+- Third-party services integration through provider
+
+
+## Core Benefits:
+
+- Version Control: Infrastructure configurations can be stored in Git and managed like code
+- Reproducibility: Same configuration produces identical infrastructure across environments
+- Scalability and flexibility - Quick scale infra up and down by modifying the code instead of mannually changing it.
+- Collaboration: Teams can review, approve, and track infrastructure changes
+- Cost Management: Better resource tracking and automated cleanup capabilities
+- Disaster Recovery: Quick infrastructure recreation from configuration files
+
+
+1. Providers
+
+Act as plugins that let Terraform interact with cloud platforms (AWS, Azure, GCP), SaaS services, or on-prem infrastructure.
+
+Each provider exposes resources and data sources you can manage.
+
+Example: aws, azurerm, google, kubernetes.
+
+
+2. Resources
+
+The fundamental building blocks of Terraform.
+
+Represent infrastructure objects such as EC2 instances, S3 buckets, VPCs, databases, etc.
+
+Declared in .tf files inside resource blocks.
+
+Example:
+resource "aws_s3_bucket" "my_bucket" {
+  bucket = "my-unique-bucket-name"
+}
+
+3. Data Sources
+
+- Read-only information from providers that you can use in configuration.
+- Useful when you need existing infrastructure details.
+- Example: fetching the latest AMI ID.
+
+4. State
+- Terraform keeps track of resources it manages using a state file (terraform.tfstate).
+- This state ensures Terraform knows what exists in the real world vs. what is defined in configuration.
+- Can be local or stored remotely (e.g., S3, Terraform Cloud).
+
+7. Modules
+# Collections of .tf files that package related resources together.
+# Help with reusability and organization of Terraform code.
+
+Two kinds: ***root module*** (your main configuration) and ***child modules*** (reusable sub-configurations).
+
+==================================================================
+Providers + Resources + Modules + State + Variables + Outputs are the core components.
+===================================================================
+
+
+
+**************************************
+
+Terraform workflow
+
+1. Develop Configuration (HCL)
+2. terraform init 
+3. terraform plan
+4. terraform apply
+5. terraform destroy
+
+
+          ┌───────────────────────────────────────────────┐
+          │ 1. Develop Configuration                      │
+          │   - Write .tf files in HCL                    │
+          │   - Define providers (AWS, Azure, GCP, etc.)  │
+          │   - Define resources (EC2, S3, VPC, etc.)     │
+          │   - Set variables & outputs                   │
+          │   - Organize into modules if needed           │
+          └───────────────────┬───────────────────────────┘
+                              │
+                              ▼
+          ┌───────────────────────────────────────────────┐
+          │ 2. terraform init                             │
+          │   - Initializes working directory             │
+          │   - Downloads provider plugins (e.g., AWS)    │
+          │   - Sets up backend for state (local/remote)  │
+          │   - Prepares modules                          │
+          └───────────────────┬───────────────────────────┘
+                              │
+                              ▼
+          ┌───────────────────────────────────────────────┐
+          │ 3. terraform plan                             │
+          │   - Refreshes state with real infrastructure  │
+          │   - Compares config vs. actual resources      │
+          │   - Shows execution plan (add/change/destroy) │
+          │   - Lets you review before applying           │
+          └───────────────────┬───────────────────────────┘
+                              │
+                              ▼
+          ┌───────────────────────────────────────────────┐
+          │ 4. terraform apply                            │
+          │   - Executes the plan                         │
+          │   - Provisions resources in correct order     │
+          │   - Shows outputs after apply (e.g., IPs)     │
+          │   - Updates terraform.tfstate file            │
+          └───────────────────┬───────────────────────────┘
+                              │
+                              ▼
+          ┌───────────────────────────────────────────────┐
+          │ 5. terraform destroy                          │
+          │   - Reads state & finds created resources     │
+          │   - Prompts confirmation before destruction   │
+          │   - Destroys infra in safe dependency order   │
+          │   - Cleans up state file after completion     │
+          └───────────────────────────────────────────────┘
