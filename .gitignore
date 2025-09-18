@@ -1,2 +1,9 @@
 .aws1
 .vscode
+.terraform/
+.terraform.tfstate/
+*.tfstate.backup
+*.tfstate
+crash.log
+*.tfvars
+*.tfvars.json
