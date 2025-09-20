@@ -7,3 +7,4 @@
 crash.log
 *.tfvars
 *.tfvars.json
+rough.py

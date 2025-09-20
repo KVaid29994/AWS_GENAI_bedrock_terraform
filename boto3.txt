@@ -1,0 +1,71 @@
+In **boto3** (AWS SDK for Python), you can interact with AWS services in two ways:
+
+---7
+
+### **1. boto3.client**
+
+* **Low-level service access**
+* Maps **directly** to AWS service API operations (like `list_buckets`, `put_item`, `send_message`).
+* The methods and responses are **very close to the raw AWS API** (JSON-like dicts).
+* You need to handle more details manually (like pagination, error handling, or building resource ARNs).
+* Returns **dictionaries** (not Pythonic objects).
+* Example:
+
+  ```python
+  import boto3
+
+  s3_client = boto3.client('s3')
+
+  # List buckets
+  response = s3_client.list_buckets()
+  for bucket in response['Buckets']:
+      print(bucket['Name'])
+  ```
+
+---
+
+### **2. boto3.resource**
+
+* **High-level, object-oriented interface**
+* Provides **abstractions** on top of clients.
+* Lets you work with AWS services in a **Pythonic way** (resources and collections instead of raw API calls).
+* Supports things like iterators, attributes, and resource methods.
+* Automatically handles some complexities (like pagination).
+* Returns **resource objects**, not just dicts.
+* Example:
+
+  ```python
+  import boto3
+
+  s3 = boto3.resource('s3')
+
+  # List buckets
+  for bucket in s3.buckets.all():
+      print(bucket.name)
+
+  # Get a specific bucket object
+  my_bucket = s3.Bucket('my-bucket')
+  for obj in my_bucket.objects.all():
+      print(obj.key)
+  ```
+
+---
+
+### **Key Differences**
+
+| Aspect          | `client`                          | `resource`                          |
+| --------------- | --------------------------------- | ----------------------------------- |
+| **Level**       | Low-level (direct API calls)      | High-level (abstractions)           |
+| **Return Type** | Dicts (raw JSON-like)             | Objects (with attributes & methods) |
+| **Ease of Use** | More boilerplate, manual handling | More Pythonic, convenient           |
+| **Features**    | Full coverage of AWS API          | Limited to commonly used features   |
+| **Performance** | Slightly faster (thin wrapper)    | Slight overhead (object mapping)    |
+
+---
+
+👉 **Rule of thumb:**
+
+* Use **`client`** if you need full API coverage, speed, or exact control.
+* Use **`resource`** if you want a cleaner, Pythonic, and object-oriented style.
+
+---
